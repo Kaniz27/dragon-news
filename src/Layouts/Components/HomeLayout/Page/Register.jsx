@@ -1,7 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router";
+import { AuthContext } from "../../../../Provider/AuthProvider";
 
 const Register = () => {
+  const { createUser ,setUser} = useContext(AuthContext);
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const photo = form.photo.value;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log({ name, photo, email, password });
+
+    createUser(email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        setUser();
+      })
+      .catch((error) => {
+        alert(error.message);
+      });
+  };
+
   return (
     <div>
       <div className="flex justify-center min-h-screen items-center">
@@ -9,32 +32,60 @@ const Register = () => {
           <h2 className="font-semibold text-2xl text-center">
             Register Your Account
           </h2>
-          <div className="card-body">
+          <form onSubmit={handleRegister} className="card-body">
             <fieldset className="fieldset">
-                {/* name */}
-                <label className="label">Name</label>
-              <input type="text" className="input" placeholder="Name" />
-              {/* photo url */}
-               <label className="label">photo URL</label>
-              <input type="text" className="input" placeholder="Photo URl" />
-                {/* email */}
+              <label className="label">Name</label>
+              <input
+                name="name"
+                type="text"
+                className="input"
+                placeholder="Name"
+                required
+              />
+
+              <label className="label">Photo URL</label>
+              <input
+                name="photo"
+                type="text"
+                className="input"
+                placeholder="Photo URL"
+                required
+              />
+
               <label className="label">Email</label>
-              <input type="email" className="input" placeholder="Email" />
-              {/* password */}
+              <input
+                name="email"
+                type="email"
+                className="input"
+                placeholder="Email"
+                required
+              />
+
               <label className="label">Password</label>
-              <input type="password" className="input" placeholder="Password" />
+              <input
+                name="password"
+                type="password"
+                className="input"
+                placeholder="Password"
+                required
+              />
+
               <div>
                 <a className="link link-hover">Forgot password?</a>
               </div>
-              <button className="btn btn-neutral mt-4">Register</button>
+
+              <button type="submit" className="btn btn-neutral mt-4">
+                Register
+              </button>
+
               <p className="text-center font-bold pt-5">
-               Already Have An Account ?{""}{" "}
-                <Link className="text-secondary" to={"/auth/login"}>
-                 Login
+                Already Have An Account?{" "}
+                <Link className="text-secondary" to="/auth/login">
+                  Login
                 </Link>
               </p>
             </fieldset>
-          </div>
+          </form>
         </div>
       </div>
     </div>

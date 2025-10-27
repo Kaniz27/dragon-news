@@ -1,23 +1,43 @@
-import { AuthCredential } from 'firebase/auth/web-extension';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useEffect, useState } from "react";
+import app from "../Firebase/Firebase.config";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signOut } from "firebase/auth";
 
- export const AuthContext=createContext();
-const AuthProvider = ({children}) => {
-
-const [user,setUser]=useState({
-    names:'kaniz',
-    email:'kaniz@g.com'
-}) 
-const authData={
+export const AuthContext = createContext();
+const auth = getAuth(app);
+const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  console.log(user);
+ const createUser=(email,password)=>{
+  return createUserWithEmailAndPassword(auth,email,password)
+ }
+ const signIn=(email,password)=>{
+    return createUserWithEmailAndPassword(auth,email,password)
+ }
+ const Logout=()=>{
+    return signOut(auth);
+ }
+ useEffect(()=>{
+ const unsubscribe=onAuthStateChanged(auth,(currentUser)=>{
+    setUser(currentUser);
+})
+return ()=>{
+unsubscribe()
+}
+ },[])
+  const authData = {
     user,
     setUser,
-}
-   return (
-        <div>
-           
-           <AuthContext value={authData}>{children}</AuthContext>
-        </div>
-    );
+    createUser,
+    Logout,
+    signIn,
+    
+    
+  };
+  return (
+    <div>
+      <AuthContext value={authData}>{children}</AuthContext>
+    </div>
+  );
 };
 
 export default AuthProvider;
