@@ -13,13 +13,14 @@ const Register = () => {
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
-    console.log({ name, photo, email, password });
+    // console.log({ name, photo, email, password ,});
 
     createUser(email, password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
-        setUser();
+        console.log(user)
+        updateUserProfile({displayName:name,photoURL:photo})
+        setUser(user);
       })
       .catch((error) => {
         alert(error.message);
